@@ -1,0 +1,92 @@
+species : 종별 구분. 반려견(10) or 반려묘(20)
+
+mission_id : 일변번호. 반려견(10_) or 반려묘(20_)
+
+breed : 품종.
+    강아지
+        GRE, DAL, DAS, DOB, GOL, LAB, MAL, BUL, BEA, BIC,
+        SHE, SCH, DRI, WEL, GER, JIN, CHL, CHS, COC, TER,
+        POM, POO, HOU, HUS, MUT, MIL, MIS, ETC
+    고양이
+        KOR,RUS,PER,SIA,TUR,SCO,MIX,ETC
+
+age : 데이터 수집 당시의 나이.
+    1년 미만의 경우 개월 수(/12)표시.
+    1살 이상부터는 점수 (0-40)
+
+pet_class : 반려견, 반려묘의 단장모 구분.
+    LH: 장모종
+    SH: 단모종
+    UK: 알수없음
+
+sex : 성별. 성별 (수컷, 암컷, 중성화수컷, 중성화암컷)
+    Male(IM)
+    Female(IF)
+    Castrated male(CM)
+    Spayed female(SF)
+
+weight : 체중(kg)
+
+exercise : 운동 강도 정의.
+    저(1) - 1주일에 1시간 이하
+    중(2)- 매일 30분 이하
+    고(3) - 매일 1시간 이상
+
+environment : 생활 환경
+    1- in-door
+    2- out-door
+
+defecation : 배변 상태
+    1-정상, 2-이상
+
+food-count : 식이 횟수 - 하루 식사횟수
+    1-1회
+    2-2회
+    3-3회
+    4-자유급식
+
+food-amount : 식이 식사량. 1회 식사량 - 종이컵을 기준으로 표기
+    1회 식사량 - 종이컵을 기준으로 표기 (소수점 입력 가능)
+
+snack-amount : 식이 간식량: 1회 식사량 대비 간식량표기
+    간식량: 사료의 X %로 표기
+
+food-kind : 식사 종류.
+    1-반려 동물 전용 사료만
+    2-전용 사료 + 사람 음식 혼용
+    3-사람 음식 위주
+
+disease : 질병 유무
+    질환(ABN)
+    정상(NOR)
+
+diseaseName : 질병 코드
+    DER -
+    MUS
+    NEU
+    OCU
+    RES
+    CAR
+    HEM
+    GAS
+    URI
+    REP
+    END
+    INF
+    ETC
+
+CRP : 바이오마커-스트레스로 인한 염증 발생 확인 (C-반응성 단백질)
+    0~500
+
+IgG : 바이오마커-스트레스로 인한 면역력 감소 확인을 위한 면역 글로블린검사 (면역글로블린 G)
+    0~2000
+
+IL-6 : 바이오마커-스트레스로 인한 염증 발생 확인 (인터류킨-6)
+    0~200
+
+AFP : 바이오마커-스트레스로 인한 간암 발생 유무 확인 (알파 태아 단백질)
+    0~50000
+
+
+
+
