@@ -14,15 +14,15 @@ def data_paring(path, pet):
 
         species, mission_id, breed, age, pet_class, sex = id_data_paring(meta)
         disease, disease_name, CRP, IgG, IL_6, AFP = medical_data_paring(meta)
-        weight = None
-        exercise = None
-        environment = None
-        defecation = None
-        food_count = None
-        food_amount = None
-        snack_amount = None
-        food_kind = None
-        stress = None
+        weight = -1
+        exercise = -1
+        environment = -1
+        defecation = -1
+        food_count = -1
+        food_amount = -1
+        snack_amount = -1
+        food_kind = -1
+        stress = -1
 
         if(type == 'B'):
             weight = physical_data_paring(meta)
