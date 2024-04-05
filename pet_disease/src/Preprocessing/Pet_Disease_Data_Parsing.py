@@ -103,7 +103,8 @@ def process_directory(directory):
     for root, dirs, files in os.walk(directory):
         for file in files:
             file_path = os.path.join(root, file)
-            data_paring(file_path, root[-3:])
+            Pet_Disease_Data_Parsing.data_paring(file_path, root[-3:])
+            #data_paring(file_path, root[-3:])
 
 directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/TL_B_반려견'
 process_directory(directory_path)
