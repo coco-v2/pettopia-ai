@@ -40,11 +40,11 @@ class Pet_Disease_Data_Parsing():
             print(pet_data)
 
             if pet == "반려견":
-                with open('../../data/dog_data.csv', 'a', newline='', encoding='UTF8') as f:
+                with open('../data/dog_data.csv', 'a', newline='', encoding='UTF8') as f:
                     csv_writer = csv.writer(f)
                     csv_writer.writerow(pet_data)
             elif pet == "반려묘":
-                with open('../../data/cat_data.csv', 'a', newline='', encoding='UTF8') as f:
+                with open('../data/cat_data.csv', 'a', newline='', encoding='UTF8') as f:
                     csv_writer = csv.writer(f)
                     csv_writer.writerow(pet_data)
 

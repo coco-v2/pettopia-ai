@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
+import pet_disease.Preprocessing.Pet_Data_Encoding as enco
+import pet_disease.Preprocessing.Pet_Data_Decoding as deco
+
 def pet_disease_recommend(species, breed, age, pet_class, sex, weight, exercise,
                           environment, defecation, food_count, food_amount,snack_amount, food_kind,):
     #1~10
@@ -36,4 +39,8 @@ def pet_disease_recommend(species, breed, age, pet_class, sex, weight, exercise,
 
 #데이터 타입 확인
 pet_disease_recommend(10,"BEA",2,"SH","IM",10.4,1,2,1,1,4,0,1)
+
+encoder = enco.Pet_Data_Encoding()
+
+
 

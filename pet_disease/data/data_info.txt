@@ -2,28 +2,63 @@ species : 종별 구분. 반려견(10) or 반려묘(20)
 
 mission_id : 일변번호. 반려견(10_) or 반려묘(20_)
 
+//인코딩
 breed : 품종.
-    강아지
-        GRE, DAL, DAS, DOB, GOL, LAB, MAL, BUL, BEA, BIC,
-        SHE, SCH, DRI, WEL, GER, JIN, CHL, CHS, COC, TER,
-        POM, POO, HOU, HUS, MUT, MIL, MIS, ETC
-    고양이
-        KOR,RUS,PER,SIA,TUR,SCO,MIX,ETC
+    강아지(10)
+        GRE(10.1) : 그레이트피레니즈
+        DAL(10.2) : 닥스훈트 장모
+        DAS(10.3) : 닥스훈트 단모
+        DOB((10.4) : 도베르만 핀셔
+        GOL(10.5) : 골드 리트리버
+        LAB(10.6) : 래브라도 리트리버
+        MAL(10.7) : 말라뮤트
+        BUL(10.8) : 불독
+        BEA (10.9) : 비글
+        BIC(10.10) : 비숑 프리제
+        SHE(10.11) : 쉽독
+        SCH(10.12) :
+        DRI(10.13)
+        WEL(10.14) : 웰시코기
+        GER(10.15) : 저먼셰퍼드
+        JIN(10.16) : 진도
+        CHL(10.17)
+        CHS(10.18) : 치와와 단모
+        COC(10.19) : 코커스패니엘
+        TER(10.20) : 테리어
+        POM(10.21) : 포메라니안
+        POO(10.22) : 푸들
+        HOU(10.23) : 하우드
+        HUS(10.24) : 허스키
+        MUT(10.25) :
+        MIL(10.26) : 믹스 장모
+        MIS(10.27) : 믹스 단모
+        ETC(10.28) : 기타
+    고양이(20)
+        KOR(20.1) : 코리안숏헤어
+        RUS(20.2) : 러시안 블루
+        PER(20.3) : 페르시안
+        SIA(20.4) :
+        TUR(20.5) :
+        SCO(20.6) : 스코티시폴드
+        MIX(20.7) :
+        ETC(20.8) : 기타
 
 age : 데이터 수집 당시의 나이.
     1년 미만의 경우 개월 수(/12)표시.
     1살 이상부터는 점수 (0-40)
 
+//인코딩
 pet_class : 반려견, 반려묘의 단장모 구분.
     LH: 장모종
     SH: 단모종
     UK: 알수없음
 
+//인코딩
 sex : 성별. 성별 (수컷, 암컷, 중성화수컷, 중성화암컷)
-    Male(IM)
-    Female(IF)
-    Castrated male(CM)
-    Spayed female(SF)
+    Male(IM) : 수컷
+    Female(IF) : 암컷
+    Castrated male(CM) : 중성화 수컷
+    Spayed female(SF) : 중성화암컷
 
 weight : 체중(kg)
 
@@ -60,20 +95,21 @@ disease : 질병 유무
     질환(ABN)
     정상(NOR)
 
+//인코딩
 diseaseName : 질병 코드
-    DER -
-    MUS
-    NEU
-    OCU
-    RES
-    CAR
-    HEM
-    GAS
-    URI
-    REP
-    END
-    INF
-    ETC
+    DER - 피부 (1)
+    MUS - 근골격계 (2)
+    NEU - 신경계 (3)
+    OCU - 안과 (4)
+    RES - 호흡계통 (5)
+    CAR - 심혈계통  (6)
+    HEM - 혈액 (7)
+    GAS - 소화계통 (8)
+    URI - 비뇨계통 (9)
+    REP - 생식계통 (10)
+    END - 내분비계통 (11)
+    INF - 감염성 및 기생충성 (12)
+    ETC - 기타 (13)
 
 CRP : 바이오마커-스트레스로 인한 염증 발생 확인 (C-반응성 단백질)
     0~500
