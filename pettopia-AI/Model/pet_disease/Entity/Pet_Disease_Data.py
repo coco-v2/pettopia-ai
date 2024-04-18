@@ -12,8 +12,8 @@ class Pet_Disease_Data():
         self.__environment:str = environment
         self.__defecation:str = defecation
         self.__food_count:int = food_count
-        self.__food_amount:int = food_amount
-        self.__snack_amount:int = snack_amount
+        self.__food_amount:float = food_amount
+        self.__snack_amount:float = snack_amount
         self.__food_kind:int = food_kind
 
     def get_species(self):

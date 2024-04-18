@@ -1,5 +1,5 @@
 import csv
-from ..Enum import Dog_Breed, Cat_Breed, Pet_Class, Sex, Exercise, Environment, Defecation, Food_Count
+from ..Enum import Dog_Breed, Cat_Breed, Pet_Class, Sex, Exercise, Environment, Defecation, Food_Count, Food_Kind
 from ..Entity import Pet_Disease_Data
 
 class Pet_Data_Encoding():
@@ -20,19 +20,30 @@ class Pet_Data_Encoding():
         self.__environment_dictionary = Environment.Environment
         self.__defecation_dictionary = Defecation.Defecation
         self.__food_count_dictionary = Food_Count.Food_Count
+        self.__food_kind_dictionary = Food_Kind.Food_Kind
 
     def data_encoding(self, data:Pet_Disease_Data.Pet_Disease_Data):
-        result={}
 
-        species = self.species_encoding(data.get_species())
-        breed = self.breed_encoding(data.get_breed(), species)
-        pet_class = self.pet_class_encoding(data.get_pet_class())
-        sex = self.pet_class_encoding(data.get_pet_class())
-        exercise = self.exercise_encoding(data.get_exercise())
-        environment = self.environment_encoding(data.get_environment())
-        defecation = self.defecation_encoding(data.get_defecation())
-        food_count = self.food_count_encoding(data.get_food_count())
-        
+        species = int(self.species_encoding(data.get_species()))
+        breed = int(self.breed_encoding(data.get_breed(), species))
+        age = int(data.get_age())
+        pet_class = int(self.pet_class_encoding(data.get_pet_class()))
+        sex = int(self.pet_class_encoding(data.get_pet_class()))
+        weight = int(data.get_weight())
+        exercise = int(self.exercise_encoding(data.get_exercise()))
+        environment = int(self.environment_encoding(data.get_environment()))
+        defecation = int(self.defecation_encoding(data.get_defecation()))
+        food_count = int(self.food_count_encoding(data.get_food_count()))
+        food_amount = float(data.get_food_amount())
+        snack_amount = float(data.get_snack_amount())
+        food_kind = int(self.food_kind_encoding(data.get_food_kind()))
+
+        result = {"species":species, "breed":breed, "age":age, "pet_class":pet_class,
+                  "sex":sex, "weight":weight, "exercise":exercise, "environment":environment,
+                  "defecation":defecation, "food_count":food_count, "food_amount":food_amount,
+                  "snack_amount":snack_amount, "food_kind":food_kind}
+
+        return result
 
     def species_encoding(self, data):
         species = 0
@@ -46,11 +57,8 @@ class Pet_Data_Encoding():
 
         return species
 
-    #Todo 각 데이터 인코딩
     def breed_encoding(self, data, species):
         breed = 0
-        print(data)
-        print(species)
 
         if species == 10:
             breed = self.__dog_breed_dictionary.__getitem__(data).value
@@ -72,6 +80,7 @@ class Pet_Data_Encoding():
         return sex
 
     def exercise_encoding(self, data):
+        print(data)
         exercise = self.__exercise_dictionary.__getitem__(data).value
 
         return exercise
@@ -95,6 +104,11 @@ class Pet_Data_Encoding():
             food_count = self.__food_count_dictionary.__getitem__(data).value
 
         return food_count
+
+    def food_kind_encoding(self,data):
+        food_kind = self.__food_kind_dictionary.__getitem__(data).value;
+
+        return food_kind
 
     def dog_data_encoding_file(self):
         file = open(self.__dog_data_file, 'r')
@@ -130,6 +144,6 @@ class Pet_Data_Encoding():
                 csv_writer = csv.writer(f)
                 csv_writer.writerow(line)
 
-test = Pet_Data_Encoding()
-t = test.breed_encoding("BEA", 10)
-print(t)
+# test = Pet_Data_Encoding()
+# t = test.breed_encoding("BEA", 10)
+# print(t)

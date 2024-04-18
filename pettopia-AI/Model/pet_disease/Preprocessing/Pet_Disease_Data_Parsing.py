@@ -99,9 +99,3 @@ class Pet_Disease_Data_Parsing():
 
         return stress
 
-def process_directory(directory):
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            Pet_Disease_Data_Parsing.data_paring(file_path, root[-3:])
-            #data_paring(file_path, root[-3:])
