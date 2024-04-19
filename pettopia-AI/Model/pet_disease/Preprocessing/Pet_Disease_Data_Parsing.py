@@ -1,5 +1,5 @@
 import json
-import os
+import pandas as pd
 import csv
 
 class Pet_Disease_Data_Parsing():
@@ -31,22 +31,19 @@ class Pet_Disease_Data_Parsing():
                 exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind = self.breeding_data_paring(meta)
                 stress = self.vital_data_paring(meta)
 
-            # CSV에 쓸 데이터 리스트로 구성
             pet_data = [pet_species, mission_id, breed, age, pet_class, sex, weight, exercise,
                         environment, defecation, food_count, food_amount, snack_amount, food_kind,
                         disease, disease_name, CRP, IgG, AFP, stress]
 
-            print(path)
-            print(pet_data)
+            df = pd.DataFrame([pet_data],
+                              columns=['pet_species', 'mission_id', 'breed', 'age', 'pet_class', 'sex', 'weight', 'exercise',
+                                       'environment', 'defecation', 'food_count', 'food_amount', 'snack_amount', 'food_kind',
+                                       'disease', 'disease_name', 'CRP', 'IgG', 'AFP', 'stress'])
 
             if species == "반려견":
-                with open('../data/dog_data.csv', 'a', newline='', encoding='UTF8') as f:
-                    csv_writer = csv.writer(f)
-                    csv_writer.writerow(pet_data)
+                df.to_csv('pet_disease/data/dog_data.csv', mode='a', header=False, index=False, encoding='UTF8')
             elif species == "반려묘":
-                with open('../data/cat_data.csv', 'a', newline='', encoding='UTF8') as f:
-                    csv_writer = csv.writer(f)
-                    csv_writer.writerow(pet_data)
+                df.to_csv('pet_disease/data/cat_data.csv', mode='a', header=False, index=False, encoding='UTF8')
 
     def id_data_paring(self, meta):
         # 기본 정보 파싱

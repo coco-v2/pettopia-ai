@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import os
+import os, ast
 from sklearn.metrics.pairwise import cosine_similarity
 
 from .Entity import Pet_Disease_Data as pet
@@ -12,7 +12,7 @@ class Pet_Disease_Model():
 
     def __init__(self):
         self.pet_encoding_data = {}
-        self.pet_disease_data_parsing =  pet_data.Pet_Disease_Data_Parsing()
+        self.pet_disease_data_parsing = pet_data.Pet_Disease_Data_Parsing()
         self.pet_data_encoder = enco.Pet_Data_Encoding()
         self.pet_data_decoder = deco.Pet_Data_Decoding()
 
@@ -46,41 +46,56 @@ class Pet_Disease_Model():
         snack_amount = self.pet_encoding_data.get("snack_amount")
         food_kind = self.pet_encoding_data.get("food_kind")
 
-        pet_features = np.array([breed, age, pet_class, sex, weight, exercise, environment,
-                                defecation, food_count, food_amount, snack_amount, food_kind])
+        pet_features = np.array([breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind])
         pet_features_weight = pet_features * np.array([weight_breed, weight_age, weight_pet_class, weight_sex, weight_weight, weight_exercise, weight_environment, weight_defecation, weight_food_count, weight_food_amount, weight_snack_amount, weight_food_kind])
 
         anonymous_data = ""
 
         #10:dog, 20:cat
         try:
-            if species == "10":
-                anonymous_data = pd.read_csv('C:/Users/jooho/Documents/GitHub/ettopia-ai/pettopia-AI/Model/pet_disease/data/dog_data_encoding.csv')
-            elif species == "20":
-                anonymous_data = pd.read_csv('C:/Users/jooho/Documents/GitHub/ettopia-ai/pettopia-AI/Model/pet_disease/data/cat_data_encoding.csv')
+            if species == 10:
+                anonymous_data = pd.read_csv('pet_disease/data/dog_data_encoding.csv', index_col=False)
+            elif species == 20:
+                anonymous_data = pd.read_csv('pet_disease/data/cat_data_encoding.csv', index_col=False)
         except Exception as e:
             print(f"Failed to load data: {e}")
             anonymous_data = None
 
-        print(type(anonymous_data))
-        print(anonymous_data.head())  # DataFrame의 첫 5행을 출력
+        if anonymous_data is not None:
+            pet_features_weight = pet_features_weight.reshape(1, -1)
 
-        similarity_scores = cosine_similarity([pet_features_weight], anonymous_data[[
-        'species', 'breed', 'age', 'pet_class', 'sex', 'weight', 'exercise', 'environment', 'defecation', 'food_count', 'food_amount', 'snack_amount', 'food_kind']])
+            anonymous_data = anonymous_data[[
+                'breed', 'age', 'pet_class', 'sex', 'weight', 'exercise', 'environment', 'defecation', 'food_count',
+                 'food_amount', 'snack_amount', 'food_kind']]
+
+            similarity_scores = cosine_similarity(pet_features_weight, anonymous_data)
+            most_similar_pet_index = np.argmax(similarity_scores)
+
+            print(similarity_scores)
+            print(most_similar_pet_index)
+
+        # pet_features_weight를 2D 배열로 변경
+        pet_features_weight = pet_features_weight.reshape(1, -1)
+
+        # anonymous_data에서 필요한 열만 선택
+        anonymous_data = anonymous_data[['breed', 'age', 'pet_class', 'sex', 'weight', 'exercise', 'environment', 'defecation', 'food_count', 'food_amount', 'snack_amount', 'food_kind']]
+
+        similarity_scores = cosine_similarity(pet_features_weight, anonymous_data)
         most_similar_pet_index = np.argmax(similarity_scores)
 
         print(similarity_scores)
         print(most_similar_pet_index)
 
+
     def process_directory(self, directory):
         for root, dirs, files in os.walk(directory):
             for file in files:
                 file_path = os.path.join(root, file)
-                pet_data.Pet_Disease_Data_Parsing.data_paring(file_path, root[-3:])
+                test = pet_data.Pet_Disease_Data_Parsing()
+                test.data_paring(file_path, root[-3:])
 
     def preprocess_pet_data(self, data):
         self.pet_encoding_data = self.pet_data_encoder.data_encoding(data)
-        print(self.pet_encoding_data)
 
 #데이터 타입 확인
 test = Pet_Disease_Model()
@@ -88,5 +103,15 @@ data = pet.Pet_Disease_Data("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","
 a = test.preprocess_pet_data(data)
 test.pet_disease_recommend()
 
+
+
+# directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/TL_B_반려견'
+# test.process_directory(directory_path)
+#
+# directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/TL_B_반려묘'
+# test.process_directory(directory_path)
+#
+# directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/02.참조데이터_C_반려견'
+# test.process_directory(directory_path)
 
 

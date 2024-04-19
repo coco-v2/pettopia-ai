@@ -2,14 +2,16 @@ import csv
 from ..Enum import Dog_Breed, Cat_Breed, Pet_Class, Sex, Exercise, Environment, Defecation, Food_Count, Food_Kind
 from ..Entity import Pet_Disease_Data
 
+import pandas as pd
+
 class Pet_Data_Encoding():
 
     def __init__(self):
-        self.__cat_data_file = "../data/cat_data.csv"
-        self.__dog_data_file = '../data/dog_data.csv'
+        self.__cat_data_file = "pet_disease/data/cat_data.csv"
+        self.__dog_data_file = "pet_disease/data/dog_data.csv"
 
-        self.__dog_encoding_file = '../data/dog_data_encoding.csv'
-        self.__cat_encoding_file = '../data/cat_data_encoding.csv'
+        self.__dog_encoding_file = "pet_disease/data/dog_data_encoding.csv"
+        self.__cat_encoding_file = "pet_disease/data/cat_data_encoding.csv"
 
 
         self.__dog_breed_dictionary = Dog_Breed.Dog_Breed
@@ -80,7 +82,6 @@ class Pet_Data_Encoding():
         return sex
 
     def exercise_encoding(self, data):
-        print(data)
         exercise = self.__exercise_dictionary.__getitem__(data).value
 
         return exercise
@@ -88,7 +89,7 @@ class Pet_Data_Encoding():
     def environment_encoding(self, data):
         environment = self.__environment_dictionary.__getitem__(data).value
 
-        return  environment
+        return environment
 
     def defecation_encoding(self, data):
         defecation = self.__defecation_dictionary.__getitem__(data).value
@@ -111,39 +112,30 @@ class Pet_Data_Encoding():
         return food_kind
 
     def dog_data_encoding_file(self):
-        file = open(self.__dog_data_file, 'r')
-        data = csv.reader(file)
+        df = pd.read_csv(self.__dog_data_file, encoding='UTF8', header=None)  # 헤더가 없는 경우
 
-        for line in data:
-            breed = line[2]
-            pet_class = line[4]
-            sex = line[5]
+        # 데이터 매핑
+        df[2] = df[2].map(self.__dog_breed_dictionary)  # 열 번호를 사용하여 열을 참조
+        df[4] = df[4].map(self.__pet_class_dictionary)
+        df[5] = df[5].map(self.__sex_dictionary)
 
-            line[2] = self.__dog_breed_dictionary.get(breed)
-            line[4] = self.__pet_class_dictionary.get(pet_class)
-            line[5] = self.__sex_dictionary.get(sex)
-
-            with open(self.__dog_encoding_file, 'a', newline='', encoding='UTF8') as f:
-                csv_writer = csv.writer(f)
-                csv_writer.writerow(line)
+        # 인코딩된 데이터 저장
+        df.to_csv(self.__dog_encoding_file, mode='a', index=False, header=False, encoding='UTF8')
 
     def cat_data_encoding_file(self):
-        file = open(self.__cat_data_file, 'r')
-        data = csv.reader(file)
+        df = pd.read_csv(self.__cat_data_file, encoding='UTF8', header=None)  # 헤더가 없는 경우
 
-        for line in data:
-            breed = line[2]
-            pet_class = line[4]
-            sex = line[5]
+        # 데이터 매핑
+        df[2] = df[2].map(self.__cat_breed_dictionary)
+        df[4] = df[4].map(self.__pet_class_dictionary)
+        df[5] = df[5].map(self.__sex_dictionary)
 
-            line[2] = self.__cat_breed_dictionary.get(breed)
-            line[4] = self.__pet_class_dictionary.get(pet_class)
-            line[5] = self.__sex_dictionary.get(sex)
-
-            with open(self.__cat_encoding_file, 'a', newline='', encoding='UTF8') as f:
-                csv_writer = csv.writer(f)
-                csv_writer.writerow(line)
+        # 인코딩된 데이터 저장
+        df.to_csv(self.__cat_encoding_file, mode='a', index=False, header=False, encoding='UTF8')
 
 # test = Pet_Data_Encoding()
 # t = test.breed_encoding("BEA", 10)
 # print(t)
+
+# test.dog_data_encoding_file()
+# test.cat_data_encoding_file()
