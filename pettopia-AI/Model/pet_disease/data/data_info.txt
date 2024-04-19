@@ -95,7 +95,7 @@ disease : 질병 유무
     정상(NOR)
 
 //인코딩
-diseaseName : 질병 코드
+disease-name : 질병 코드
     DER - 피부 (1)
     MUS - 근골격계 (2)
     NEU - 신경계 (3)
