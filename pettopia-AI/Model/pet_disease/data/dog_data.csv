@@ -1,4 +1,4 @@
-pet_species, mission_id, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind, disease, disease_name, CRP, IgG, AFP, stress
+pet_species,mission_id,breed,age,pet_class,sex,weight,exercise,environment,defecation,food_count,food_amount,snack_amount,food_kind,disease,disease_name,CRP,IgG,AFP,stress
 10,10_000942,BEA,2,SH,CM,10.2,2,2,1,1,3,0,1,NOR,,2.23,6.14,0.54,2.71
 10,10_000942,BEA,2,SH,CM,10.2,2,2,1,1,3,0,1,NOR,,2.23,6.14,0.54,2.71
 10,10_000942,BEA,2,SH,CM,10.2,2,2,1,1,3,0,1,NOR,,2.23,6.14,0.54,2.71

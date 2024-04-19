@@ -54,9 +54,9 @@ class Pet_Disease_Model():
         #10:dog, 20:cat
         try:
             if species == 10:
-                anonymous_data = pd.read_csv('pet_disease/data/dog_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('pet_disease/data/dog_data_encoding.csv', index_col=False)
             elif species == 20:
-                anonymous_data = pd.read_csv('pet_disease/data/cat_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('pet_disease/data/cat_data_encoding.csv', index_col=False)
         except Exception as e:
             print(f"Failed to load data: {e}")
             anonymous_data = None
@@ -64,28 +64,27 @@ class Pet_Disease_Model():
         if anonymous_data is not None:
             pet_features_weight = pet_features_weight.reshape(1, -1)
 
-            anonymous_data = anonymous_data[[
+            anonymous_data = anonymous_data_original[[
                 'breed', 'age', 'pet_class', 'sex', 'weight', 'exercise', 'environment', 'defecation', 'food_count',
                  'food_amount', 'snack_amount', 'food_kind']]
 
             similarity_scores = cosine_similarity(pet_features_weight, anonymous_data)
-            most_similar_pet_index = np.argmax(similarity_scores)
 
-            print(similarity_scores)
-            print(most_similar_pet_index)
+            abn_pet_indices = [i for i, pet in enumerate(anonymous_data_original['disease']) if pet == 'ABN']
+            abn_similarity_scores = similarity_scores[0][abn_pet_indices]
+            most_similar_abn_pet_index = abn_pet_indices[np.argmax(abn_similarity_scores)]
 
-        # pet_features_weight를 2D 배열로 변경
-        pet_features_weight = pet_features_weight.reshape(1, -1)
+            nor_pet_indices = [i for i, pet in enumerate(anonymous_data_original['disease']) if pet == 'NOR']
+            nor_similarity_scores = similarity_scores[0][nor_pet_indices]
+            most_similar_nor_pet_index = nor_pet_indices[np.argmax(nor_similarity_scores)]
 
-        # anonymous_data에서 필요한 열만 선택
-        anonymous_data = anonymous_data[['breed', 'age', 'pet_class', 'sex', 'weight', 'exercise', 'environment', 'defecation', 'food_count', 'food_amount', 'snack_amount', 'food_kind']]
+            recommended_abn_pet_df = anonymous_data_original.iloc[most_similar_abn_pet_index].to_frame().transpose()
+            recommended_nor_pet_df = anonymous_data_original.iloc[most_similar_nor_pet_index].to_frame().transpose()
 
-        similarity_scores = cosine_similarity(pet_features_weight, anonymous_data)
-        most_similar_pet_index = np.argmax(similarity_scores)
+            print(recommended_abn_pet_df)
+            print(recommended_nor_pet_df)
 
-        print(similarity_scores)
-        print(most_similar_pet_index)
-
+            return recommended_abn_pet_df, recommended_nor_pet_df
 
     def process_directory(self, directory):
         for root, dirs, files in os.walk(directory):

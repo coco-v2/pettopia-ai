@@ -1,4 +1,4 @@
-pet_species, mission_id, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind, disease, disease_name, CRP, IgG, AFP, stress
+pet_species,mission_id,breed,age,pet_class,sex,weight,exercise,environment,defecation,food_count,food_amount,snack_amount,food_kind,disease,disease_name,CRP,IgG,AFP,stress
 20,20_000005,1,2,3,3,6,2,1,1,4,2,10,1,NOR,,20.8,15.73,0.54,2.6
 20,20_000005,1,2,3,3,6,2,1,1,4,2,10,1,NOR,,20.8,15.73,0.54,2.6
 20,20_000005,1,2,3,3,6,2,1,1,4,2,10,1,NOR,,20.8,15.73,0.54,2.6
