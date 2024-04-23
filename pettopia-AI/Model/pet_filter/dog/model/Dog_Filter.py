@@ -26,8 +26,8 @@ class Dog_Filter_AI():
         #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.img = cv2.resize(img, dsize=None, fx=0.2, fy=0.2)
 
-    def img_show_result(self):
-        cv2.imshow("image", self.img)
+    def img_show_result(self, img):
+        cv2.imshow("image", img)
         cv2.waitKey(0)
 
     def detector_face(self):
@@ -46,7 +46,7 @@ class Dog_Filter_AI():
             x1, y1 = d.rect.left(), d.rect.top()
             x2, y2 = d.rect.right(), d.rect.bottom()
 
-            cv2.rectangle(img_result, pt1=(x1, y1), pt2=(x2, y2), thickness=2, color=(255, 0, 0), lineType=cv2.LINE_AA)
+            #cv2.rectangle(img_result, pt1=(x1, y1), pt2=(x2, y2), thickness=2, color=(255, 0, 0), lineType=cv2.LINE_AA)
 
         self.img_result = img_result
 
@@ -62,20 +62,18 @@ class Dog_Filter_AI():
                 cv2.putText(self.img_result, str(i), tuple(p), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1,
                             cv2.LINE_AA)
 
-        #cv2.imshow("img",self.img_result)
-
-    def dog_filter(self, filter):
+    def dog_filter(self, filter_head, filter_nose):
 
         img_result2 = self.img.copy()
 
-        horns = cv2.imread('../image/horns2.png', cv2.IMREAD_UNCHANGED)
+        horns = cv2.imread(filter_head, cv2.IMREAD_UNCHANGED)
         horns_h, horns_w = horns.shape[:2]
 
-        nose = cv2.imread('../image/nose.png', cv2.IMREAD_UNCHANGED)
+        nose = cv2.imread(filter_nose, cv2.IMREAD_UNCHANGED)
 
         for shape in self.shapes:
-            horns_center = np.mean([shape[4], shape[1]], axis=0) // [1, 1.3]
-            horns_size = np.linalg.norm(shape[4] - shape[1]) * 3
+            horns_center = np.mean([shape[4], shape[1]], axis=0) // [1, 1.05]
+            horns_size = np.linalg.norm(shape[4] - shape[1]) * 2
 
             nose_center = shape[3]
             nose_size = horns_size // 4
@@ -84,7 +82,7 @@ class Dog_Filter_AI():
             M = cv2.getRotationMatrix2D((horns_w, horns_h), angle, 1)
             rotated_horns = cv2.warpAffine(horns, M, (horns_w, horns_h))
 
-            img_result2 = self.overlay_transparent(nose, nose_center[0], nose_center[1],
+            img_result2 = self.overlay_transparent(img_result2, nose, nose_center[0], nose_center[1],
                                               overlay_size=(int(nose_size), int(nose_size)))
             try:
                 img_result2 = self.overlay_transparent(img_result2, rotated_horns, horns_center[0], horns_center[1],
@@ -97,12 +95,12 @@ class Dog_Filter_AI():
 
         #img_out2 = cv2.cvtColor(img_result2, cv2.COLOR_RGB2BGR)
         #cv2.imwrite('img/%s_out2%s' % (filename, ext), img_result2)
-        plt.figure(figsize=(16, 16))
-        plt.imshow(img_result2)
 
-    def overlay_transparent(self, img_to_overlay_t, x, y, overlay_size=None):
+        self.img_result = img_result2
+
+    def overlay_transparent(self, background_img, img_to_overlay_t, x, y, overlay_size=None):
         img_to_overlay_t = cv2.cvtColor(img_to_overlay_t, cv2.COLOR_BGRA2RGBA)
-        bg_img = self.img.copy()
+        bg_img = background_img
         # convert 3 channels to 4 channels
         if bg_img.shape[2] == 3:
             bg_img = cv2.cvtColor(bg_img, cv2.COLOR_RGB2RGBA)
@@ -125,18 +123,20 @@ class Dog_Filter_AI():
         # convert 4 channels to 4 channels
         bg_img = cv2.cvtColor(bg_img, cv2.COLOR_RGBA2RGB)
 
+        return bg_img
+
     def angle_between(self,p1, p2):
         xDiff = p2[0] - p1[0]
         yDiff = p2[1] - p1[1]
+
         return degrees(atan2(yDiff, xDiff))
 
-mypath = '../image/dog1.jpg'
-c = Dog_Filter_AI()
-c.img_read(mypath)
-c.img_show_result()
-c.detector_face()
-c.detector_landmarks()
-c.dog_filter("d")
-#c.img_show()
+# mypath = '../image/dog1.jpg'
+# c = Dog_Filter_AI()
+# c.img_read(mypath)
+# c.detector_face()
+# c.detector_landmarks()
+# c.dog_filter("d")
+# c.img_show_result(c.img_result)
 
 

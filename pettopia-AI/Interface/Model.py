@@ -10,5 +10,6 @@ class Model(ABC):
     def train_model(self):
         pass
 
+    @abstractmethod
     def preprocess_data(self):
         pass
