@@ -1,4 +1,4 @@
-import dlib, cv2, os
+import dlib, cv2, os, datetime
 from imutils import face_utils
 from math import atan2, degrees
 pwd = os.path.dirname(__file__)
@@ -9,13 +9,14 @@ import numpy as np
 # conda install -c conda-forge/label/cf201901 dlib
 # conda install -c conda-forge/label/cf202003 dlib
 
-class Dog_Filter_AI():
+class Dog_Filter():
 
     def __init__(self):
-        self.detector = dlib.cnn_face_detection_model_v1(pwd+'/dogHeadDetector.dat')
-        self.predictor = dlib.shape_predictor(pwd+'/landmarkDetector.dat')
+        self.__detector = dlib.cnn_face_detection_model_v1(pwd+'/model/dogHeadDetector.dat')
+        self.__predictor = dlib.shape_predictor(pwd+'/model/landmarkDetector.dat')
         self.img = None
         self.img_result = None
+        self.file_result = None
         self.dets = None
         self.faces = None
         self.shapes = []
@@ -32,7 +33,7 @@ class Dog_Filter_AI():
 
     def detector_face(self):
         #객체 탐지기 사용
-        self.dets = self.detector(self.img, upsample_num_times=1)
+        self.dets = self.__detector(self.img, upsample_num_times=1)
 
         img_result = self.img.copy()
 
@@ -53,7 +54,7 @@ class Dog_Filter_AI():
     def detector_landmarks(self):
 
         for i, d in enumerate(self.dets):
-            self.shape = self.predictor(self.img, d.rect)
+            self.shape = self.__predictor(self.img, d.rect)
             self.shape = face_utils.shape_to_np(self.shape)
 
             for i, p in enumerate(self.shape):
@@ -90,13 +91,16 @@ class Dog_Filter_AI():
             except:
                 print('failed overlay image')
 
-        filename = "petopia-AI/img"
-        ext = "myPet"
+        current_datetime = datetime.datetime.now()
 
-        #img_out2 = cv2.cvtColor(img_result2, cv2.COLOR_RGB2BGR)
-        #cv2.imwrite('img/%s_out2%s' % (filename, ext), img_result2)
+        filename = current_datetime.strftime("%Y%m%d_%H%M%S")  # 예: 20220425_164230
+
+        image_path = "../image/" + filename + ".jpg"
+
+        cv2.imwrite(image_path, img_result2)
 
         self.img_result = img_result2
+        self.file_result = filename
 
     def overlay_transparent(self, background_img, img_to_overlay_t, x, y, overlay_size=None):
         img_to_overlay_t = cv2.cvtColor(img_to_overlay_t, cv2.COLOR_BGRA2RGBA)
@@ -121,7 +125,7 @@ class Dog_Filter_AI():
         bg_img[int(y - h / 2):int(y + h / 2), int(x - w / 2):int(x + w / 2)] = cv2.add(img1_bg, img2_fg)
 
         # convert 4 channels to 4 channels
-        bg_img = cv2.cvtColor(bg_img, cv2.COLOR_RGBA2RGB)
+        #bg_img = cv2.cvtColor(bg_img, cv2.COLOR_RGBA2RGB)
 
         return bg_img
 
@@ -131,12 +135,12 @@ class Dog_Filter_AI():
 
         return degrees(atan2(yDiff, xDiff))
 
-# mypath = '../image/dog1.jpg'
-# c = Dog_Filter_AI()
-# c.img_read(mypath)
-# c.detector_face()
-# c.detector_landmarks()
-# c.dog_filter("d")
-# c.img_show_result(c.img_result)
+mypath = 'image/dog1.jpg'
+c = Dog_Filter()
+c.img_read(mypath)
+c.detector_face()
+c.detector_landmarks()
+c.dog_filter("image/horns2.png", "image/nose.png")
+c.img_show_result(c.img_result)
 
 
