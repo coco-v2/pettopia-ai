@@ -23,9 +23,9 @@ class Dog_Filter():
         self.shape = None
 
     def img_read(self, img_path):
-        img = cv2.imread(img_path)
+        self.img = cv2.imread(img_path)
         #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.img = cv2.resize(img, dsize=None, fx=0.2, fy=0.2)
+        #self.img = cv2.resize(img, dsize=None, fx=0.2, fy=0.2)
 
     def img_show_result(self, img):
         cv2.imshow("image", img)
@@ -67,10 +67,10 @@ class Dog_Filter():
 
         img_result2 = self.img.copy()
 
-        horns = cv2.imread(filter_head, cv2.IMREAD_UNCHANGED)
+        horns = cv2.imread(filter_head)
         horns_h, horns_w = horns.shape[:2]
 
-        nose = cv2.imread(filter_nose, cv2.IMREAD_UNCHANGED)
+        nose = cv2.imread(filter_nose)
 
         for shape in self.shapes:
             horns_center = np.mean([shape[4], shape[1]], axis=0) // [1, 1.05]
@@ -135,12 +135,11 @@ class Dog_Filter():
 
         return degrees(atan2(yDiff, xDiff))
 
-mypath = 'image/dog1.jpg'
-c = Dog_Filter()
-c.img_read(mypath)
-c.detector_face()
-c.detector_landmarks()
-c.dog_filter("image/horns2.png", "image/nose.png")
-c.img_show_result(c.img_result)
-
+# mypath = 'image/dog1.jpg'
+# c = Dog_Filter()
+# c.img_read(mypath)
+# c.detector_face()
+# c.detector_landmarks()
+# c.dog_filter("image/horns2.png", "image/nose.png")
+# c.img_show_result(c.img_result)
 
