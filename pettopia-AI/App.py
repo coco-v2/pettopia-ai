@@ -15,14 +15,14 @@ def api_pet_filter():
         filter_nose = request.form['petFilterNose']
         filter_horns = request.form['petFilterHorns']
 
-        img_np = np.fromstring(img_file.read(), np.uint8)
+        img_np = np.frombuffer(img_file.read(), np.uint8)
         img_cv = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
 
         response = None
         model = life.Life_Controller_AI()
 
-        filter_horns = "/Model/pet_filter/image" + filter_horns
-        filter_nose = "/Model/pet_filter/image" + filter_nose
+        filter_horns = "/AI/pet_filter/image" + filter_horns
+        filter_nose = "/AI/pet_filter/image" + filter_nose
 
         if species == "강이지":
             response = model.get_dog_filter(img_cv, filter_horns, filter_nose)
@@ -32,7 +32,7 @@ def api_pet_filter():
         retval, buffer = cv2.imencode('.jpg', response)
         response_bytes = buffer.tobytes()
 
-        return send_file(io.BytesIO(response_bytes), mimetype='image/jpg')
+        return send_file(io.BytesIO(response_bytes), mimetype='image/jpeg')
 
     except Exception as e:
         return jsonify({'error': str(e)})

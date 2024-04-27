@@ -1,8 +1,8 @@
-#from ..Model.pet_filter.dog import Dog_Filter
-#from ..Model.pet_filter.cat import Cat_Filter
+#from ..AI.pet_filter.dog import Dog_Filter
+#from ..AI.pet_filter.cat import Cat_Filter
 import sys
 sys.path.append('pettopia-AI')
-from Model.pet_filter.dog import Dog_Filter
+from AI.pet_filter.dog import Dog_Filter
 
 class Life_Controller_AI():
 
@@ -14,12 +14,19 @@ class Life_Controller_AI():
         pass
 
     def get_dog_filter(self, img, filter_horns, filter_nose):
-        self.dog_filter.img_read(img)
+        path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_filter/dog/image/'
+
+        self.dog_filter.img_read(path+'dog_img/'+img)
         self.dog_filter.detector_face()
         self.dog_filter.detector_landmarks()
-        self.dog_filter.dog_filter(filter_horns, filter_nose)
+        self.dog_filter.dog_filter(path+'horns_img/'+filter_horns, path+'nose_img/'+filter_nose)
 
-        return self.dog_filter.file_result
+        return self.dog_filter.img_result
 
 c = Life_Controller_AI()
-c.get_dog_filter("Model/pet_filter/dog/image/dog1.jpg", "Model/pet_filter/dog/image/horns2.png", "Model/pet_filter/dog/image/nose.png")
+s = 'dog1.jpg'
+v = 'horns2.png'
+b = 'nose.png'
+
+c.get_dog_filter(s, v, b)
+
