@@ -7,6 +7,12 @@ from Control import Life_Controller_AI as life
 
 app = Flask(__name__)
 
+
+@app.route('/', methods=['GET', 'POST'])
+def test():
+    return 'AA'
+
+
 @app.route('/pet_filter', methods=['POST'])
 def api_pet_filter():
     try:
@@ -21,8 +27,8 @@ def api_pet_filter():
         response = None
         model = life.Life_Controller_AI()
 
-        filter_horns = "/AI/pet_filter/image" + filter_horns
-        filter_nose = "/AI/pet_filter/image" + filter_nose
+        # filter_horns = "/AI/pet_filter/image/" + filter_horns
+        # filter_nose = "/AI/pet_filter/image/" + filter_nose
 
         if species == "강이지":
             response = model.get_dog_filter(img_cv, filter_horns, filter_nose)
@@ -36,6 +42,7 @@ def api_pet_filter():
 
     except Exception as e:
         return jsonify({'error': str(e)})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

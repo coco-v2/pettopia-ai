@@ -1,4 +1,5 @@
 import pandas as pd
+#from ...Enum.Disease-
 
 class Pet_Data_Decoding():
 
@@ -21,14 +22,12 @@ class Pet_Data_Decoding():
         return 0
 
     def abn_data_decoding(self, abn_data:pd.DataFrame):
-        abn_disease_name = abn_data['disease_name']
+        abn_disease_name:str = abn_data['disease_name']
         abn_CRP = abn_data['CRP']
         abn_IgG = abn_data['IgG']
         abn_IL_6 = abn_data['IL-6']
         abn_AFP = abn_data['AFP']
         abn_stree = abn_data['stress']
-
-        abn_disease_name = abn_disease_name.apply(lambda x: x.split('/') if '/' in x else [x])
 
         return abn_disease_name, abn_CRP, abn_IgG, abn_IL_6, abn_AFP, abn_stree
 
@@ -40,5 +39,9 @@ class Pet_Data_Decoding():
         nor_stree = nor_data['stress']
 
         return nor_CRP, nor_IgG, nor_IL_6, nor_AFP, nor_stree
+
+    def abn_disease_name_decoding(self, name):
+        pass
+
 
 
