@@ -54,9 +54,9 @@ class Pet_Disease_Model():
         #10:dog, 20:cat
         try:
             if species == 10:
-                anonymous_data_original = pd.read_csv('pet_disease/data/dog_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('pettopia-AI/AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
             elif species == 20:
-                anonymous_data_original = pd.read_csv('pet_disease/data/cat_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('pettopia-AI/AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
         except Exception as e:
             print(f"Failed to load data: {e}")
             anonymous_data = None
@@ -74,17 +74,9 @@ class Pet_Disease_Model():
             abn_similarity_scores = similarity_scores[0][abn_pet_indices]
             most_similar_abn_pet_index = abn_pet_indices[np.argmax(abn_similarity_scores)]
 
-            nor_pet_indices = [i for i, pet in enumerate(anonymous_data_original['disease']) if pet == 'NOR']
-            nor_similarity_scores = similarity_scores[0][nor_pet_indices]
-            most_similar_nor_pet_index = nor_pet_indices[np.argmax(nor_similarity_scores)]
-
             recommended_abn_pet_df = anonymous_data_original.iloc[most_similar_abn_pet_index].to_frame().transpose()
-            recommended_nor_pet_df = anonymous_data_original.iloc[most_similar_nor_pet_index].to_frame().transpose()
 
-            print(recommended_abn_pet_df)
-            print(recommended_nor_pet_df)
-
-            return recommended_abn_pet_df, recommended_nor_pet_df
+            return recommended_abn_pet_df
 
     def process_directory(self, directory):
         for root, dirs, files in os.walk(directory):

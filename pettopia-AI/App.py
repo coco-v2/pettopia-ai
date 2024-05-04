@@ -1,16 +1,17 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 import cv2
 import numpy as np
 import io
-
+from Control import Medical_Controller_AI as med
 from Control import Life_Controller_AI as life
+import json
 
 app = Flask(__name__)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def test():
-    return 'AA'
+    return '펫토피아'
 
 
 @app.route('/pet_filter', methods=['POST'])
@@ -40,6 +41,32 @@ def api_pet_filter():
 
         return send_file(io.BytesIO(response_bytes), mimetype='image/jpeg')
 
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/PetDiseaseRecommend', methods=['POST'])
+def api_sentence_generation():
+    try:
+        data = request.get_json()
+        breed = data.get('breed')
+        age = data.get('age')
+        pet_class = data.get('pet_class')
+        sex = data.get('sex')
+        weight = data.get('weight')
+        exercise = data.get('exercise')
+        environment = data.get('environment')
+        defecation = data.get('defecation')
+        food_count = data.get('food_count')
+        food_amount = data.get('food_amount')
+        snack_amount = data.get('snack_amount')
+        food_kind = data.get('food_kind')
+
+        model = med.Medical_Controller_AI()
+
+        response_array = model.get_pet_disease(breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind)
+        response_dict = {'response': response_array}
+        return Response(response=json.dumps(response_dict, ensure_ascii=False).encode('utf-8'),
+                        content_type='application/json; charset=utf-8')
     except Exception as e:
         return jsonify({'error': str(e)})
 
