@@ -4,13 +4,13 @@ from ..AI.pet_disease.Preprocessing.Pet_Data_Decoding import Pet_Data_Decoding
 
 class Medical_Controller_AI():
 
-    def get_pet_disease(self, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind):
+    def get_pet_disease(self, species, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind):
         test = Pet_Disease_Model()
+        data = Pet_Disease_Data( species, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind)
         test.preprocess_pet_data(data)
         recommended_abn_pet_df = test.pet_disease_recommend()
         decoder = Pet_Data_Decoding()
         result = decoder.data_decoding(recommended_abn_pet_df)
-
         return result
 
 
@@ -18,5 +18,5 @@ class Medical_Controller_AI():
         return 0
 
 # test = Medical_Controller_AI()
-# data = Pet_Disease_Data("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","NORMAL",4,3,1,"FEED")
-# test.get_pet_disease(data)
+# #data = Pet_Disease_Data("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","NORMAL",4,3,1,"FEED")
+# test.get_pet_disease("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","NORMAL",4,3,1,"FEED")

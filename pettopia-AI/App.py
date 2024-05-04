@@ -48,6 +48,7 @@ def api_pet_filter():
 def api_sentence_generation():
     try:
         data = request.get_json()
+        species = data.get('species')
         breed = data.get('breed')
         age = data.get('age')
         pet_class = data.get('pet_class')
@@ -63,7 +64,7 @@ def api_sentence_generation():
 
         model = med.Medical_Controller_AI()
 
-        response_array = model.get_pet_disease(breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind)
+        response_array = model.get_pet_disease(species, breed, age, pet_class, sex, weight, exercise, environment, defecation, food_count, food_amount, snack_amount, food_kind)
         response_dict = {'response': response_array}
         return Response(response=json.dumps(response_dict, ensure_ascii=False).encode('utf-8'),
                         content_type='application/json; charset=utf-8')
