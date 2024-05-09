@@ -3,10 +3,17 @@ import pandas as pd
 import os, ast
 from sklearn.metrics.pairwise import cosine_similarity
 
-from .Entity import Pet_Disease_Data as pet
-from .Preprocessing import Pet_Data_Encoding as enco
-from .Preprocessing import Pet_Data_Decoding as deco
-from .Preprocessing import Pet_Disease_Data_Parsing as pet_data
+import sys
+
+sys.path.append('pettopia-AI')
+from AI.pet_disease.Entity import Pet_Disease_Data as pet
+from AI.pet_disease.Preprocessing import Pet_Data_Encoding as enco
+from AI.pet_disease.Preprocessing import Pet_Data_Decoding as deco
+from AI.pet_disease.Preprocessing import Pet_Disease_Data_Parsing as pet_data
+# from .Entity import Pet_Disease_Data as pet
+# from .Preprocessing import Pet_Data_Encoding as enco
+# from .Preprocessing import Pet_Data_Decoding as deco
+# from .Preprocessing import Pet_Disease_Data_Parsing as pet_data
 
 class Pet_Disease_Model():
 
@@ -54,9 +61,9 @@ class Pet_Disease_Model():
         #10:dog, 20:cat
         try:
             if species == 10:
-                anonymous_data_original = pd.read_csv('pettopia-AI/AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
             elif species == 20:
-                anonymous_data_original = pd.read_csv('pettopia-AI/AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
+                anonymous_data_original = pd.read_csv('AI/pet_disease/data/dog_data_encoding.csv', index_col=False)
         except Exception as e:
             print(f"Failed to load data: {e}")
             anonymous_data = None
@@ -89,10 +96,10 @@ class Pet_Disease_Model():
         self.pet_encoding_data = self.pet_data_encoder.data_encoding(data)
 
 #데이터 타입 확인
-test = Pet_Disease_Model()
-data = pet.Pet_Disease_Data("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","NORMAL",4,3,1,"FEED")
-a = test.preprocess_pet_data(data)
-test.pet_disease_recommend()
+#test = Pet_Disease_Model()
+#data = pet.Pet_Disease_Data("강아지","BEA",2,"SH","IM",10.4,"LOW","IN_DOOR","NORMAL",4,3,1,"FEED")
+#a = test.preprocess_pet_data(data)
+#est.pet_disease_recommend()
 
 
 

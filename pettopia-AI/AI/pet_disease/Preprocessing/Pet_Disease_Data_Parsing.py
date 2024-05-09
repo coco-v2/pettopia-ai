@@ -96,3 +96,12 @@ class Pet_Disease_Data_Parsing():
 
         return stress
 
+# directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/TL_B_반려견'
+# process_directory(directory_path)
+#
+# directory_path = 'C:/Users/jooho/Desktop/petpoia/data/disease_notice/Training/TL_B_반려묘'
+# process_directory(directory_path)
+#
+# test = Pet_Disease_Data_Parsing()
+# test.data_paring("반려견")
+# test.data_paring("반려묘")

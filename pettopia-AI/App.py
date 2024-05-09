@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify, send_file, Response
-import cv2
 import numpy as np
-import io
+import io, sys, json, cv2
+
+sys.path.append('pettopia-AI')
 from Control import Medical_Controller_AI as med
 from Control import Life_Controller_AI as life
-import json
 
 app = Flask(__name__)
 

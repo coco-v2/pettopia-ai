@@ -21,7 +21,7 @@ class Life_Controller_AI():
     def get_dog_filter(self, img, filter_horns, filter_nose):
         img_filename = f"uploaded_{uuid.uuid4()}.jpg"
         print(img_filename)
-        path = 'C:/pettopia_AI/petFilter_AI/pettopia-ai/pettopia-AI/AI/pet_filter/dog/image/'
+        path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_filter/dog/image/dog_img' #초희 주소
         img_path = os.path.join(path, img_filename)
         try:
             # 이미지 저장

@@ -1,4 +1,8 @@
-from .....Interface import Process_Data
+import sys
+
+sys.path.append('pettopia-AI')
+
+from Interface import Process_Data
 
 import random
 import cv2, os
@@ -9,10 +13,6 @@ class Preprocess_Pet_Face_Data(Process_Data.Preprocess_Data):
 
     def __init__(self):
         self.img_size = 224
-        self.dir_name = 'CAT_00'
-        self.base_path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_filter/cat/data/archive/%s' % self.dir_name
-        self.file_list = sorted(os.listdir(self.base_path))
-        random.shuffle(self.file_list)
 
         self.dataset = {
             'imgs': [],
@@ -39,18 +39,23 @@ class Preprocess_Pet_Face_Data(Process_Data.Preprocess_Data):
     def process_img(self):
         pass
 
-    def load_cat_data(self):
-        for f in self.file_list:
+    def load_cat_data(self, dir_name):
+        #dir_name = 'CAT_00'
+        base_path = 'AI/pet_filter/cat/data/archive/%s' % dir_name
+        file_list = sorted(os.listdir(base_path))
+        random.shuffle(file_list)
+
+        for f in file_list:
             if '.cat' not in f:
                 continue
 
             # 랜드마크 읽기
-            pd_frame = pd.read_csv(os.path.join(self.base_path, f), sep=' ', header=None)
+            pd_frame = pd.read_csv(os.path.join(base_path, f), sep=' ', header=None)
             landmarks = (pd_frame.to_numpy()[0][1:-1]).reshape((-1, 2))  # pd를 numpy로 변환. 1차원 배열을 2차원(자동, 2열)으로 재구성
 
             # 사진 가져오기
             img_filename, ext = os.path.splitext(f)  # 이름과 확장자 분리(확장자 포함 and 확장자 미포함)
-            img = cv2.imread(os.path.join(self.base_path, img_filename))
+            img = cv2.imread(os.path.join(base_path, img_filename))
 
             #
             img, ratio, top, left = self.resize_img(img)
@@ -68,7 +73,4 @@ class Preprocess_Pet_Face_Data(Process_Data.Preprocess_Data):
             # if cv2.waitKey(0) == ord('q'):
             #     break
 
-        np.save('C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_filter/cat/data/dataset/%s.npy' % self.dir_name, np.array((self.dataset)))
-
-# test = Preprocess_Pet_Face_Data()
-# test.load_cat_data()
+        np.save('C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_filter/cat/data/dataset/%s.npy' % dir_name, np.array((self.dataset)))

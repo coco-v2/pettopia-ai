@@ -2,7 +2,6 @@ import dlib, cv2, os, datetime
 from imutils import face_utils
 from math import atan2, degrees
 pwd = os.path.dirname(__file__)
-import matplotlib.pyplot as plt
 import numpy as np
 
 # conda install -c conda-forge dlib

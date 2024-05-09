@@ -1,12 +1,14 @@
-from .....Interface import Model as myModel
-from ..Preprocessing.Preprocess_Pet_Face_Data import Preprocess_Pet_Face_Data
-import keras, datetime
-import tensorflow as tf
-from keras.layers import Input, Dense
-from keras.models import Model
-from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau
-from keras.applications import mobilenet_v2
-from keras.losses import mean_squared_error
+import sys
+
+sys.path.append('pettopia-AI')
+from Interface import Model as myModel
+from AI.pet_filter.cat.Preprocessing.Preprocess_Pet_Face_Data import Preprocess_Pet_Face_Data
+import datetime
+from tensorflow.python.keras.layers import Input, Dense
+from tensorflow.python.keras.models import Model
+from tensorflow.python.keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow import keras
+from tensorflow.python.keras.losses import mean_squared_error
 import numpy as np
 
 class Pet_Face_Detector_Model(myModel.Model):
@@ -28,20 +30,18 @@ class Pet_Face_Detector_Model(myModel.Model):
 
         start_time = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
         #
-        # data_00 = np.load('data/archive/CAT_00.npy')
-        data_01 = np.load('data/archive/CAT_01.npy')
-        data_02 = np.load('data/archive/CAT_02.npy')
-        data_03 = np.load('data/archive/CAT_03.npy')
-        data_04 = np.load('data/archive/CAT_04.npy')
-        data_05 = np.load('data/archive/CAT_05.npy')
-        data_06 = np.load('data/archive/CAT_06.npy')
+        data_00 = np.load('AI/pet_filter/cat/data/dataset/CAT_00.npy', allow_pickle=True)
+        data_01 = np.load('AI/pet_filter/cat/data/dataset/CAT_01.npy', allow_pickle=True)
+        data_02 = np.load('AI/pet_filter/cat/data/dataset/CAT_02.npy', allow_pickle=True)
+        data_03 = np.load('AI/pet_filter/cat/data/dataset/CAT_03.npy', allow_pickle=True)
+        data_04 = np.load('AI/pet_filter/cat/data/dataset/CAT_04.npy', allow_pickle=True)
+        data_05 = np.load('AI/pet_filter/cat/data/dataset/CAT_05.npy', allow_pickle=True)
+        data_06 = np.load('AI/pet_filter/cat/data/dataset/CAT_06.npy', allow_pickle=True)
 
         x_train = np.concatenate((data_00.item().get('imgs'), data_01.item().get('imgs'), data_02.item().get('imgs'),
-                                  data_03.item().get('imgs'), data_04.item().get('imgs'), data_05.item().get('imgs'),
-                                  data_06.item().get('imgs')))
+                                  data_03.item().get('imgs'), data_04.item().get('imgs'), data_05.item().get('imgs')))
         y_train = np.concatenate((data_00.item().get(mode), data_01.item().get(mode), data_02.item().get(mode),
-                                  data_03.item().get(mode), data_04.item().get(mode), data_05.item().get(mode),
-                                  data_06.item().get(mode)))
+                                  data_03.item().get(mode), data_04.item().get(mode), data_05.item().get(mode)))
 
         x_test = np.array(data_06.item().get('imgs'))
         y_test = np.array(data_06.item().get(mode))
@@ -56,11 +56,13 @@ class Pet_Face_Detector_Model(myModel.Model):
 
         inputs = Input(shape=(img_size, img_size, 3))
 
-        moblienetV2 = mobilenet_v2.MobileNetV2(input_shape=(img_size, img_size, 3), alpha=1.0, depth_multiplier=1,
+        moblienetV2 = keras.applications.MobileNetV2(input_shape=(img_size, img_size, 3), alpha=1.0, depth_multiplier=1,
                                                include_top=False,
                                                weights='imagenet', input_tensor=inputs, pooling='max')
 
         net = Dense(128, activation='relu')(moblienetV2.layers[-1].output)
+        net = Dense(64, activation='relu')(net)
+        net = Dense(32, activation='relu')(net)
         net = Dense(64, activation='relu')(net)
         net = Dense(output_size, activation='linear')(net)
 
@@ -81,11 +83,15 @@ class Pet_Face_Detector_Model(myModel.Model):
                                ]
                                )
 
-    def preprocess_data(self):
-        print("D")
-        self.pet_face.load_cat_data()
-        print("a")
+    def preprocess_data(self, dir_name):
+        self.pet_face.load_cat_data(dir_name)
 
 test = Pet_Face_Detector_Model()
-test.preprocess_data()
-#test.train_model()
+# test.preprocess_data('CAT_00')
+# test.preprocess_data('CAT_01')
+# test.preprocess_data('CAT_02')
+# test.preprocess_data('CAT_03')
+# test.preprocess_data('CAT_04')
+# test.preprocess_data('CAT_05')
+# test.preprocess_data('CAT_06')
+test.train_model()
