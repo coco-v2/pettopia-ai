@@ -1,42 +1,66 @@
-'''
-
-def preprocessing_img
-def train_pet_color_model
-def test
-'''
-import tensorflow as tf
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Input, Dense
+import cv2
 import numpy as np
+from sklearn.cluster import KMeans
+import os,sys
 
-# 가정: 색상을 RGB 형태로 입력 받음. 출력은 먼셀 색조화론에 따른 분류 값임.
-# 입력 색상 예시 (RGB)
-colors = np.array([
-  [255, 0, 0],  # 빨간색
-  [0, 255, 0],  # 초록색
-  [0, 0, 255]   # 파란색
-])
+sys.path.append('pettopia-AI')
+from AI.pet_color.Preprocess.Preprocess_Pet_Image_Data import Preprocess_Pet_Image_Data
 
-# 해당 색상의 먼셀 색조화론에 따른 분류 (예시 값)
-labels = np.array([
-  [1],  # 빨간색
-  [2],  # 초록색
-  [3]   # 파란색
-])
+class Pet_Color_Model():
 
-model = Sequential([
-  Dense(64, activation='relu', input_shape=(3,)),  # 3개의 입력(색상 RGB)
-  Dense(64, activation='relu'),
-  Dense(1, activation='sigmoid')  # 출력: 먼셀 색조 분류값
-])
+  def __init__(self):
+    self.preprocess_data = Preprocess_Pet_Image_Data()
 
-model.compile(optimizer='adam', loss='mean_squared_error')
+  # 주요 색상 추출
+  def extract_colors(self, image_path, num_colors=3):
+    image = cv2.imread(image_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    pixels = image.reshape(-1, 3)
 
-model.fit(colors, labels, epochs=500)
+    kmeans = KMeans(n_clusters=num_colors, random_state=42)
+    kmeans.fit(pixels)
+    colors = kmeans.cluster_centers_
 
-# 새로운 색상으로 테스트
-new_colors = np.array([
-  [128, 0, 0]  # 어두운 빨간색
-])
+    return colors
 
-print(model.predict(new_colors))
+
+  # 조화로운 색상 찾기
+  def find_harmonious_colors(self, colors):
+    n5_hsv = (0, 0, 128)  # 중성 회색 (N5)의 HSV 값
+    harmonious_colors = []
+
+    for color in colors:
+      hsv_color = self.preprocess_data.rgb_to_hsv_255(*color)
+      harmonious_color_hsv = (hsv_color[0], hsv_color[1], n5_hsv[2])
+      harmonious_color_rgb = self.preprocess_data.hsv_to_rgb_255(*harmonious_color_hsv)
+      harmonious_colors.append(harmonious_color_rgb)
+
+    return harmonious_colors
+
+  # 이미지 처리 및 저장
+  def process_data(self, image_path):
+    colors = self.extract_colors(image_path)
+    harmonious_colors = self.find_harmonious_colors(colors)
+
+    harmonious_colors = [tuple(map(int, color)) for color in harmonious_colors]
+
+    self.save_colors(harmonious_colors)
+
+  def save_colors(self, colors):
+    result = []
+
+    for idx, color in enumerate(colors):
+      color_img = np.zeros((100, 100, 3), dtype=np.uint8)
+      color_img[:] = color
+
+      #hex_color = '#{:02x}{:02x}{:02x}'.format(*color)
+      result.append(color)
+
+    return result
+
+
+# 이미지 경로
+# image_path = 'AI/pet_color/data/cat.jpg'
+#
+# test = Pet_Color_Model()
+# test.process_data(image_path)

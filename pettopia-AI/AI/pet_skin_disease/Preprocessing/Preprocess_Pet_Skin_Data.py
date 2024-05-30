@@ -1,4 +1,4 @@
-import json
+import json, re
 import sys
 sys.path.append('pettopia-AI')
 
@@ -15,13 +15,12 @@ class Preprocess_Pet_Disease_Data():
         super().__init__()
         self.img_size = 224
         self.dir_name = 'A1'
-        self.base_path = 'AI/pet_skin_disease/data/archive/%s' % self.dir_name
+        self.base_path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/archive/%s' % self.dir_name
         self.file_list = sorted(os.listdir(self.base_path))
         random.shuffle(self.file_list)
         self.dataset = {
             'imgs':[],
             'label':[],
-            'bbs':[]
         }
 
     def resize_img(self, img):
@@ -65,10 +64,20 @@ class Preprocess_Pet_Disease_Data():
 
         return x_train, y_train
 
+    def process_filter(self, img):
+        sharpening_kernel = np.array([[-1, -1, -1],
+                                      [-1, 9, -1],
+                                      [-1, -1, -1]])
+
+        # 샤프닝 필터 적용
+        sharpened_image = cv2.filter2D(img, -1, sharpening_kernel)
+
+        return sharpened_image
+
     def load_data(self, dir_name):
         cnt = 0
 
-        base_path = 'AI/pet_skin_disease/data/archive/%s' % dir_name
+        base_path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/archive/%s' % dir_name
         file_list = sorted(os.listdir(base_path))
         random.shuffle(file_list)
 
@@ -83,30 +92,39 @@ class Preprocess_Pet_Disease_Data():
                 for item in data['labelingInfo']:
                     if 'box' in item:
                         box = item['box']
+
                         label = box['label']
-                        location = box['location'][0]
-
-                        x, y, width, height = location['x'], location['y'], location['width'], location['height']
-                        bb = np.array([x, y, x + width, y + height])
-
-                        self.dataset['label'].append(label)
-                        self.dataset['bbs'].append(bb)
-
-            img_filename, _ = os.path.splitext(f)
-            img_path = os.path.join(base_path, img_filename + '.jpg')
-            img = cv2.imread(img_path)
-
-            print(cnt)
-            cnt += 1
-
-            if img is not None:
-                self.dataset['imgs'].append(img)
-
-            if cnt == 3001:
-                break
+                        label_num = re.findall(r'\d+', dir_name)
 
 
-        np.save('AI/pet_skin_disease/data/dataset/%s.npy' % dir_name, np.array((self.dataset)))
+                        location = box['location']
+                        x = int(location[0]['x'])
+                        y = int(location[0]['y'])
+                        width = int(location[0]['width'])
+                        height = int(location[0]['height'])
+
+                        img_filename, _ = os.path.splitext(f)
+                        img_path = os.path.join(base_path, img_filename + '.jpg')
+                        img = cv2.imread(img_path)
+                        cropped_img = img[y:y+height, x:x+width]
+
+                        res_img = self.process_filter(cropped_img)
+                        # cv2.imshow("d", res_img)
+                        # cv2.waitKey(0)
+                        # cv2.destroyAllWindows()
+
+                        if img is not None:
+                            self.dataset['label'].append(int(label_num[0]))
+                            self.dataset['imgs'].append(res_img)
+
+                    print(cnt)
+                    cnt += 1
+
+                if cnt > 5001:
+                    break
+
+
+        np.save('C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/%s.npy' % dir_name, np.array((self.dataset)))
 
 test = Preprocess_Pet_Disease_Data()
 print("a1")
@@ -119,8 +137,8 @@ test.load_data('A1')
 #test.load_data('A4')
 #print("a5")
 #test.load_data('A5')
-#print("a6")
-#test.load_data('A6')
+# print("a6")
+# test.load_data('A6')
 
 # def delete_image_and_json_pairs_except_n(dir_name, n):
 #     base_path = 'AI/pet_skin_disease/data/archive/%s' % dir_name

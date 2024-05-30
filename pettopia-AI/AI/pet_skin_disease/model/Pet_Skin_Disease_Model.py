@@ -7,7 +7,7 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
 
 sys.path.append('pettopia-AI')
 from Interface import Model as myModel
-from AI.pet_disease.Preprocessing.Preprocess_Pet_Disease_Data import Preprocess_Pet_Disease_Data
+from AI.pet_disease.Preprocessing.Preprocess_Pet_Skin_Data import Preprocess_Pet_Skin_Data
 
 import numpy as np
 
@@ -15,7 +15,7 @@ class Pet_Skin_Disease_Model(myModel.Model):
 
     def __init__(self):
         super.__init__()
-        self.pet_skin = Preprocess_Pet_Disease_Data()
+        self.pet_skin = Preprocess_Pet_Skin_Data()
 
     def model_test(self):
         pass
@@ -24,12 +24,12 @@ class Pet_Skin_Disease_Model(myModel.Model):
         output_size = 6
         img_size = 224
 
-        data_paths = ['pettopia-AI/AI/pet_skin_disease/data/dataset/A1.npy',
-                      'pettopia-AI/AI/pet_skin_disease/data/dataset/A2.npy',
-                      'pettopia-AI/AI/pet_skin_disease/data/dataset/A3.npy',
-                      'pettopia-AI/AI/pet_skin_disease/data/dataset/A4.npy',
-                      'pettopia-AI/AI/pet_skin_disease/data/dataset/A5.npy',
-                      'pettopia-AI/AI/pet_skin_disease/data/dataset/A6.npy']
+        data_paths = ['C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A1.npy',
+                      'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A2.npy',
+                      'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A3.npy',
+                      'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A4.npy',
+                      'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A5.npy',
+                      'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/A6.npy']
 
         x_train, y_train = [], []
         for path in data_paths:
@@ -37,8 +37,9 @@ class Pet_Skin_Disease_Model(myModel.Model):
             imgs = data.get('imgs')
             labels = data.get('labels')
 
-            x_train.extend(imgs)
-            y_train.extend(labels)
+            if labels != None:
+                x_train.extend(imgs)
+                y_train.extend(labels)
 
         x_train = np.array(x_train).astype('float32') / 255
         y_train = np.array(y_train).astype('float32')
@@ -69,7 +70,7 @@ class Pet_Skin_Disease_Model(myModel.Model):
         model.fit(x_train, y_train, epochs=10, validation_split=0.2)
 
         # 모델 저장
-        model.save('pettopia-AI/AI/pet_skin_disease/model/pet_skin_disease_model.h5')
+        model.save('C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/model/pet_skin_disease_model.h5')
 
     def preprocess_data(self, dir_name):
         self.pet_face.load_cat_data(dir_name)

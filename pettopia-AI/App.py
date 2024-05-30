@@ -5,6 +5,7 @@ import io, sys, json, cv2
 sys.path.append('pettopia-AI')
 from Control import Medical_Controller_AI as med
 from Control import Life_Controller_AI as life
+from Control import Beauty_Controller_AI as beauty
 
 app = Flask(__name__)
 
@@ -13,6 +14,25 @@ app = Flask(__name__)
 def test():
     return '펫토피아'
 
+@app.route('/pet_color', methods=['POST'])
+def api_pet_color():
+    try:
+        img_file = request.files['petImage']
+
+        img_np = np.frombuffer(img_file.read(), np.uint8)
+        img_cv = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
+
+        model = beauty.Beauty_Controller_AI()
+
+        response = model.get_pet_color(img_cv)
+
+        response_dict = {'response': response}
+
+        return Response(response=json.dumps(response_dict, ensure_ascii=False).encode('utf-8'),
+                    content_type='application/json; charset=utf-8')
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 @app.route('/pet_filter', methods=['POST'])
 def api_pet_filter():
@@ -21,6 +41,7 @@ def api_pet_filter():
         species = request.form['species']
         filter_nose = request.form['petFilterNose']
         filter_horns = request.form['petFilterHorns']
+        cat_filter = request.form['petFilterCat']
 
         img_np = np.frombuffer(img_file.read(), np.uint8)
         img_cv = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
@@ -28,13 +49,13 @@ def api_pet_filter():
         response = None
         model = life.Life_Controller_AI()
 
-        # filter_horns = "/AI/pet_filter/image/" + filter_horns
-        # filter_nose = "/AI/pet_filter/image/" + filter_nose
-
         if species == "강이지":
+            filter_horns = "AI/pet_filter/dog/image/horns_img" + filter_horns + ".png"
+            filter_nose = "AI/pet_filter/dog/image/nose_img" + filter_nose + ".png"
             response = model.get_dog_filter(img_cv, filter_horns, filter_nose)
         elif species == "고양이":
-            response = model.get_cat_filter(img_cv, filter_horns, filter_nose)
+            filter_img = "AI/pet_filter/cat/image/filter_img" + cat_filter + ".png"
+            response = model.get_cat_filter(img_cv, filter_img)
 
         retval, buffer = cv2.imencode('.jpg', response)
         response_bytes = buffer.tobytes()
@@ -73,4 +94,4 @@ def api_sentence_generation():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5002, debug=True)
