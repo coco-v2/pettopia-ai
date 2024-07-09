@@ -23,9 +23,10 @@ class Dog_Filter():
 
     def img_read(self, img_path):
         print(img_path)
-        img = cv2.imread(img_path)
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.img = cv2.resize(img, dsize=None, fx=0.2, fy=0.2)
+        self.img = cv2.imread(img_path)
+        #cv2.imshow("d", self.img)
+        #self.img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        #self.img = cv2.resize(img, dsize=None, fx=0.2, fy=0.2)
 
     def img_show_result(self, img):
         cv2.imshow("image", img)
@@ -136,7 +137,7 @@ class Dog_Filter():
 
         return degrees(atan2(yDiff, xDiff))
 
-# mypath = 'image/dog1.jpg'
+# mypath = 'image/dog_img/test1.jpg'
 # c = Dog_Filter()
 # c.img_read(mypath)
 # c.detector_face()

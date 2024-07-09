@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
-import os,sys
+import sys, os
 
 sys.path.append('pettopia-AI')
 from AI.pet_color.Preprocess.Preprocess_Pet_Image_Data import Preprocess_Pet_Image_Data
+
 
 class Pet_Color_Model():
 
@@ -12,12 +13,16 @@ class Pet_Color_Model():
     self.preprocess_data = Preprocess_Pet_Image_Data()
 
   # 주요 색상 추출
-  def extract_colors(self, image_path, num_colors=3):
-    image = cv2.imread(image_path)
+  def extract_colors(self, img_path, num_colors=3):
+    #path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_color/data/'
+    #img_path = os.path.join(path, img)
+    image = cv2.imread(img_path)
+
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     pixels = image.reshape(-1, 3)
 
     kmeans = KMeans(n_clusters=num_colors, random_state=42)
+
     kmeans.fit(pixels)
     colors = kmeans.cluster_centers_
 
@@ -44,7 +49,9 @@ class Pet_Color_Model():
 
     harmonious_colors = [tuple(map(int, color)) for color in harmonious_colors]
 
-    self.save_colors(harmonious_colors)
+    result = self.save_colors(harmonious_colors)
+
+    return result
 
   def save_colors(self, colors):
     result = []
@@ -60,7 +67,7 @@ class Pet_Color_Model():
 
 
 # 이미지 경로
-# image_path = 'AI/pet_color/data/cat.jpg'
+# image_path = 'cat.jpg'
 #
 # test = Pet_Color_Model()
 # test.process_data(image_path)

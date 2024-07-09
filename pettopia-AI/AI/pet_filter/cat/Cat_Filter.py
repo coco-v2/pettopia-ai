@@ -28,11 +28,14 @@ class Cat_Filter():
         self.img = cv2.imread(img_path)
         self.img = cv2.resize(self.img, self.img.shape[:2])
         self.img_result = self.img.copy()
+        print("1")
 
         original_height, original_width = self.img.shape[:2]
+        print("2")
 
         self.ratio_w = original_width / self.img_size
         self.ratio_h = original_height / self.img_size
+        print("3")
 
     def img_show_result(self, img):
         cv2.imshow("image", img)
@@ -55,7 +58,9 @@ class Cat_Filter():
         return new_im, ratio, top, left
 
     def detector_face(self):
+        print("4")
         self.img, ratio, top, left = self.resize_img(self.img)
+        print("5")
         inputs = (self.img.astype('float32') / 255).reshape((1, self.img_size, self.img_size, 3))
         pred_bb = self.__detector.predict(inputs)[0].reshape((-1, 2))
 
@@ -63,22 +68,31 @@ class Cat_Filter():
         return ori_bb
 
     def detector_landmarks(self, ori_bb):
+        print("6")
         center = np.mean(ori_bb, axis=0)
+        print("6.1")
         face_size = max(np.abs(ori_bb[1] - ori_bb[0]))
+        print("6.2")
         new_bb = np.array([
             center - face_size * 0.6,
             center + face_size * 0.6
         ])
+        print("6.3")
         new_bb = np.clip(new_bb, 0, 99999)
-
+        print("6.4")
         face_img = self.img[int(new_bb[0][1]):int(new_bb[1][1]), int(new_bb[0][0]):int(new_bb[1][0])]
+        print("6.5")
         face_img, face_ratio, face_top, face_left = self.resize_img(face_img)
-
+        print("6.6")
         face_inputs = (face_img.astype('float32') / 255).reshape((1, self.img_size, self.img_size, 3))
+        print("6.7")
         pred_lmks = self.__predictor.predict(face_inputs)[0].reshape((-1, 2))
-
+        print("6.8")
         new_lmks = ((pred_lmks - np.array([face_left, face_top])) / face_ratio).astype(np.int32)
+        print("6.9")
         ori_lmks = new_lmks + new_bb[0]
+
+        print("7")
 
         return ori_lmks
 

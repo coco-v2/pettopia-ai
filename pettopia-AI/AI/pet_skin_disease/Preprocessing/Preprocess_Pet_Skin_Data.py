@@ -7,12 +7,11 @@ sys.path.append('pettopia-AI')
 import random
 import cv2, os
 import numpy as np
-import pandas as pd
+#import pandas as pd
 
 class Preprocess_Pet_Disease_Data():
 
     def __init__(self):
-        super().__init__()
         self.img_size = 224
         self.dir_name = 'A1'
         self.base_path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/archive/%s' % self.dir_name
@@ -64,6 +63,21 @@ class Preprocess_Pet_Disease_Data():
 
         return x_train, y_train
 
+    def color_augmentation(self, image):
+        hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+        hue_shift = np.random.randint(-10, 10)
+        saturation_scale = np.random.uniform(0.8, 1.2)
+        value_scale = np.random.uniform(0.8, 1.2)
+
+        hsv_image[:, :, 0] = (hsv_image[:, :, 0] + hue_shift) % 180
+        hsv_image[:, :, 1] = np.clip(hsv_image[:, :, 1] * saturation_scale, 0, 255)
+        hsv_image[:, :, 2] = np.clip(hsv_image[:, :, 2] * value_scale, 0, 255)
+
+        augmented_image = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
+
+        return augmented_image
+
     def process_filter(self, img):
         sharpening_kernel = np.array([[-1, -1, -1],
                                       [-1, 9, -1],
@@ -77,11 +91,13 @@ class Preprocess_Pet_Disease_Data():
     def load_data(self, dir_name):
         cnt = 0
 
-        base_path = 'C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/archive/%s' % dir_name
+        base_path = 'AI/pet_skin_disease/data/archive/%s' % dir_name
         file_list = sorted(os.listdir(base_path))
         random.shuffle(file_list)
 
         for f in file_list:
+            img_filename, _ = os.path.splitext(f)
+
             if '.json' not in f:
                 continue
 
@@ -98,6 +114,7 @@ class Preprocess_Pet_Disease_Data():
 
 
                         location = box['location']
+
                         x = int(location[0]['x'])
                         y = int(location[0]['y'])
                         width = int(location[0]['width'])
@@ -105,10 +122,12 @@ class Preprocess_Pet_Disease_Data():
 
                         img_filename, _ = os.path.splitext(f)
                         img_path = os.path.join(base_path, img_filename + '.jpg')
+                        #print(img_path)
                         img = cv2.imread(img_path)
                         cropped_img = img[y:y+height, x:x+width]
 
                         res_img = self.process_filter(cropped_img)
+                        res_img = self.color_augmentation(res_img)
                         # cv2.imshow("d", res_img)
                         # cv2.waitKey(0)
                         # cv2.destroyAllWindows()
@@ -116,32 +135,33 @@ class Preprocess_Pet_Disease_Data():
                         if img is not None:
                             self.dataset['label'].append(int(label_num[0]))
                             self.dataset['imgs'].append(res_img)
+                            #print(int(label_num[0]))
 
-                    print(cnt)
-                    cnt += 1
-
-                if cnt > 5001:
-                    break
 
 
         np.save('C:/Users/jooho/Documents/GitHub/pettopia-ai/pettopia-AI/AI/pet_skin_disease/data/dataset/%s.npy' % dir_name, np.array((self.dataset)))
 
-test = Preprocess_Pet_Disease_Data()
+
+test1 = Preprocess_Pet_Disease_Data()
+test2 = Preprocess_Pet_Disease_Data()
+test3 = Preprocess_Pet_Disease_Data()
+test4 = Preprocess_Pet_Disease_Data()
+#test5 = Preprocess_Pet_Disease_Data()
+
 print("a1")
-test.load_data('A1')
-#print("a2")
-#test.load_data('A2')
-#print("a3")
-#test.load_data('A3')
-#print("a4")
-#test.load_data('A4')
+test1.load_data('A1')
+print("a2")
+test2.load_data('A2')
+print("a3")
+test3.load_data('A3')
+print("a4")
+test4.load_data('A4')
 #print("a5")
-#test.load_data('A5')
-# print("a6")
-# test.load_data('A6')
+#test5.load_data('A5')
+
 
 # def delete_image_and_json_pairs_except_n(dir_name, n):
-#     base_path = 'AI/pet_skin_disease/data/archive/%s' % dir_name
+#     base_path = 'C:/Users/jooho/Desktop/petpoia/data/피부병/152.반려동물 피부질환 데이터/01.데이터/1.Training/2_라벨링데이터_231024_add/반려견/피부/일반카메라/유증상/%s' % dir_name
 #     file_list = sorted(os.listdir(base_path))
 #
 #     jpg_files = [f for f in file_list if f.endswith('.jpg')]
@@ -170,4 +190,4 @@ test.load_data('A1')
 #
 #     print("%d image and json pairs deleted." % (cnt // 2))
 #
-# delete_image_and_json_pairs_except_n('A1', 5000)
+# delete_image_and_json_pairs_except_n('A5_미란_궤양', 5000)

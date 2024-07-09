@@ -12,6 +12,7 @@ import pandas as pd
 class Preprocess_Pet_Face_Data(Process_Data.Preprocess_Data):
 
     def __init__(self):
+        super().__init__()
         self.img_size = 224
 
         self.dataset = {
@@ -37,7 +38,32 @@ class Preprocess_Pet_Face_Data(Process_Data.Preprocess_Data):
         return new_img, ratio, top, left
 
     def process_img(self):
-        pass
+        img_size = 224
+        mode = 'bbs'  # [bbs, lmks]
+        output_size = 4 if mode == 'bbs' else 18
+
+        # 데이터 로드 및 전처리
+        data_paths = ['/content/drive/MyDrive/Colab Notebooks/CAT_00.npy',
+                      '/content/drive/MyDrive/Colab Notebooks/CAT_01.npy',
+                      '/content/drive/MyDrive/Colab Notebooks/CAT_02.npy',
+                      '/content/drive/MyDrive/Colab Notebooks/CAT_03.npy']
+
+        x_train, y_train, x_test, y_test = [], [], [], []
+        for i, path in enumerate(data_paths):
+            data = np.load(path, allow_pickle=True)
+            imgs = data.item().get('imgs')
+            labels = data.item().get(mode)
+
+            x_train.append(imgs)
+            y_train.append(labels)
+
+        x_train = np.concatenate(x_train).astype('float32') / 255
+        y_train = np.concatenate(y_train).astype('float32')
+
+        x_train = np.reshape(x_train, (-1, img_size, img_size, 3))
+        y_train = np.reshape(y_train, (-1, output_size))
+
+        return x_train, y_train
 
     def load_cat_data(self, dir_name):
         #dir_name = 'CAT_00'

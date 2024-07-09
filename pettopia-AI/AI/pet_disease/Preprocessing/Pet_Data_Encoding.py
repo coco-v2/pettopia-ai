@@ -34,7 +34,7 @@ class Pet_Data_Encoding():
         exercise = int(self.exercise_encoding(data.get_exercise()))
         environment = int(self.environment_encoding(data.get_environment()))
         defecation = int(self.defecation_encoding(data.get_defecation()))
-        food_count = int(self.food_count_encoding(data.get_food_count()))
+        food_count = int(data.get_food_count())
         food_amount = float(data.get_food_amount())
         snack_amount = float(data.get_snack_amount())
         food_kind = int(self.food_kind_encoding(data.get_food_kind()))
@@ -101,17 +101,18 @@ class Pet_Data_Encoding():
         if data >= 4 :
             food_count = self.__food_count_dictionary.__getitem__("FREE").value
         else:
+            print(data)
             food_count = self.__food_count_dictionary.__getitem__(data).value
 
         return food_count
 
     def food_kind_encoding(self,data):
-        food_kind = self.__food_kind_dictionary.__getitem__(data).value;
+        food_kind = self.__food_kind_dictionary.__getitem__(data).value
 
         return food_kind
 
     def dog_data_encoding_file(self):
-        df = pd.read_csv(self.__dog_data_file, encoding='UTF8', header=None)  # 헤더가 없는 경우
+        df = pd.read_csv(self.__dog_data_file, encoding='UTF8', header=None)
 
         # 데이터 매핑
         df[2] = df[2].map(self.__dog_breed_dictionary)  # 열 번호를 사용하여 열을 참조
